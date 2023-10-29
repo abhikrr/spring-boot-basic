@@ -24,13 +24,19 @@ class GreetingControllerTest {
     @Value("${local.management.port}")
     private int mgt;
 
+    @Value("${spring.security.user.name}")
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Test
     public void shouldReturn200WhenSendingRequestToController() throws Exception {
         @SuppressWarnings("rawtypes")
-        ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
+        ResponseEntity<Map> entity = this.testRestTemplate.withBasicAuth(username, password).getForEntity(
                 "http://localhost:" + this.port + "/hello-world", Map.class);
 
         then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -39,7 +45,7 @@ class GreetingControllerTest {
     @Test
     public void shouldReturn200WhenSendingRequestToManagementEndpoint() throws Exception {
         @SuppressWarnings("rawtypes")
-        ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
+        ResponseEntity<Map> entity = this.testRestTemplate.withBasicAuth(username, password).getForEntity(
                 "http://localhost:" + this.mgt + "/actuator", Map.class);
         then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
