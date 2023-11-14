@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tests")
 public class TestController {
 
     private final TestService testService;
@@ -19,7 +18,7 @@ public class TestController {
         this.testService = testService;
     }
 
-    @PostMapping
+    @PostMapping("tests")
     public ResponseEntity<Test> createTest(@RequestBody Test newTest){
         try {
             Test createTest = testService.createTest(newTest);
@@ -27,6 +26,11 @@ public class TestController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/tests/{test}")
+    public List<Test> getTestByName(@PathVariable String test){
+        return testService.findTestByTest(test);
     }
 
 }
